@@ -1,0 +1,29 @@
+<form method="post">
+
+    {% csrf_token %}
+
+    <label>Nome:</label>
+    <input type="text" name="nome">
+
+
+    <label>Email:</label>
+    <input type="email" name="email">
+
+
+    <label>Telefone:</label>
+    <input type="text" name="telefone">
+
+
+    <label>RG:</label>
+    <input type="text" name="rg">
+
+
+    <label>Senha:</label>
+    <input type="password" name="senha">
+
+
+    <button type="submit">
+        Cadastrar Professor
+    </button>
+
+</form>
