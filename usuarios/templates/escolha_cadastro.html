@@ -1,12 +1,20 @@
-<h1>Escolha o cadastro</h1>
-
-
-<a href="/cadastro/aluno/">
-    Cadastro de Aluno
-</a>
-
-<br><br>
-
-<a href="/cadastro/professor/">
-    Cadastro de Professor
-</a>
+{% extends "base.html" %}
+{% block title %}Cadastro | MiConte+{% endblock %}
+{% block content %}
+<div class="page">
+    <section class="info">
+        <h1>Bem-vindo ao <strong>MiConte+</strong></h1>
+        <p>Escolha seu perfil para criar sua conta.</p>
+    </section>
+    <section class="auth">
+        <div class="brand">MiConte<span>+</span></div>
+        <div class="card-area">
+            <h2>Criar cadastro</h2>
+            <p class="muted">Qual é o seu perfil?</p>
+            <a class="choice" href="{% url 'cadastro_aluno' %}"><div>Sou <strong>Estudante</strong></div><div class="arrow">→</div></a>
+            <a class="choice" href="{% url 'cadastro_professor' %}"><div>Sou <strong>Professor</strong></div><div class="arrow">→</div></a>
+            <a class="small-link" href="{% url 'home' %}">Voltar ao início</a>
+        </div>
+    </section>
+</div>
+{% endblock %}
