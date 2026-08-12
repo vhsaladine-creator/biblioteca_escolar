@@ -1,28 +1,27 @@
-<h1>Login Professor</h1>
-
-
-<form method="post">
-
-{% csrf_token %}
-
-
-<label>RG:</label><br>
-<input type="text" name="rg">
-
-
-<br><br>
-
-
-<label>Senha:</label><br>
-<input type="password" name="senha">
-
-
-<br><br>
-
-
-<button type="submit">
-Entrar
-</button>
-
-
-</form>
+{% extends "base.html" %}
+{% block title %}Login do professor | MiConte+{% endblock %}
+{% block content %}
+<div class="page">
+    <section class="info">
+        <h1>Acesse o <strong>MiConte+</strong></h1>
+        <p>Use sua conta de professor para acessar as ferramentas da biblioteca escolar.</p>
+    </section>
+    <section class="auth">
+        <div class="brand">MiConte<span>+</span></div>
+        <div class="card-area">
+            <h2>Professor</h2>
+            <p class="muted">Informe seu RG e sua senha.</p>
+            {% if erro %}<div class="error">{{ erro }}</div>{% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <label for="rg">RG</label>
+                <input id="rg" name="rg" placeholder="Digite seu RG" required>
+                <label for="senha">Senha</label>
+                <input id="senha" name="senha" type="password" placeholder="Digite sua senha" required>
+                <div class="buttons"><a class="btn btn-secondary" href="{% url 'home' %}">Voltar</a><button class="btn btn-primary" type="submit">Acessar</button></div>
+            </form>
+            <a class="small-link" href="{% url 'cadastro_professor' %}">Não possui cadastro? <strong>Cadastre-se</strong></a>
+        </div>
+    </section>
+</div>
+{% endblock %}
