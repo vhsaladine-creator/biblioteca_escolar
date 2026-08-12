@@ -1,231 +1,195 @@
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
-
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
+from django.db import transaction
+from django.shortcuts import redirect, render
 
 from .models import Aluno, Professor
 
-
-# =========================
-# 1. PÁGINA INICIAL
-# =========================
 
 def home(request):
     return render(request, "home.html")
 
 
-# =========================
-# 2. ESCOLHA DE CADASTRO
-# =========================
-
 def escolha_cadastro(request):
     return render(request, "escolha_cadastro.html")
 
 
-# =========================
-# 3. JÁ TENHO CADASTRO
-# =========================
-
 def ja_tenho_cadastro(request):
-    return render(request, "ja_tenho_cadastro.html")
+    return redirect("login")
 
-
-# =========================
-# 4. ESCOLHA LOGIN
-# =========================
 
 def login_escolha(request):
     return render(request, "login_escolha.html")
 
 
+def _identificador_aluno(ra, digito_ra, uf):
+    return f"{ra.strip()}-{digito_ra.strip()}-{uf.strip().upper()}"
 
-# =========================
-# 5. CADASTRO DE ALUNO
-# =========================
 
 def cadastro_aluno(request):
-
     if request.method == "POST":
+        nome = request.POST.get("nome", "").strip()
+        email = request.POST.get("email", "").strip().lower()
+        telefone = request.POST.get("telefone", "").strip()
+        ra = request.POST.get("ra", "").strip()
+        digito_ra = request.POST.get("digito_ra", "").strip()
+        uf = request.POST.get("uf", "SP").strip().upper()
+        turma = request.POST.get("turma", "").strip()
+        senha = request.POST.get("senha", "")
 
-        nome = request.POST.get("nome")
-        email = request.POST.get("email")
-        telefone = request.POST.get("telefone")
-        ra = request.POST.get("ra")
-        turma = request.POST.get("turma")
-        senha = request.POST.get("senha")
-
-
-        # Verifica se o RA já existe
-        if User.objects.filter(username=ra).exists():
+        if not all([nome, email, ra, digito_ra, uf, turma, senha]):
             return render(request, "cadastro_aluno.html", {
-                "erro": "Esse RA já está cadastrado"
+                "erro": "Preencha todos os campos obrigatórios."
             })
 
-
-        # Verifica se o email já existe
-        if Aluno.objects.filter(email=email).exists():
+        if Aluno.objects.filter(ra=ra).exists():
             return render(request, "cadastro_aluno.html", {
-                "erro": "Esse email já está cadastrado"
+                "erro": "Esse RA já está cadastrado."
             })
 
+        if User.objects.filter(email=email).exists() or Aluno.objects.filter(email=email).exists():
+            return render(request, "cadastro_aluno.html", {
+                "erro": "Esse e-mail já está cadastrado."
+            })
 
-        user = User.objects.create_user(
-            username=ra,
-            email=email,
-            password=senha
-        )
+        username = _identificador_aluno(ra, digito_ra, uf)
+        if User.objects.filter(username=username).exists():
+            return render(request, "cadastro_aluno.html", {
+                "erro": "Esses dados de acesso já estão cadastrados."
+            })
 
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=username,
+                email=email,
+                password=senha,
+            )
+            Aluno.objects.create(
+                user=user,
+                nome=nome,
+                email=email,
+                telefone=telefone,
+                ra=ra,
+                digito_ra=digito_ra,
+                uf=uf,
+                turma=turma,
+            )
 
-        Aluno.objects.create(
-            user=user,
-            nome=nome,
-            email=email,
-            telefone=telefone,
-            ra=ra,
-            turma=turma
-        )
-
-
-        return redirect("/login/aluno/")
-
+        return redirect("login_aluno")
 
     return render(request, "cadastro_aluno.html")
 
 
-
-# =========================
-# 6. CADASTRO DE PROFESSOR
-# =========================
-
 def cadastro_professor(request):
-
     if request.method == "POST":
+        nome = request.POST.get("nome", "").strip()
+        email = request.POST.get("email", "").strip().lower()
+        telefone = request.POST.get("telefone", "").strip()
+        rg = request.POST.get("rg", "").strip()
+        senha = request.POST.get("senha", "")
 
-        nome = request.POST.get("nome")
-        email = request.POST.get("email")
-        telefone = request.POST.get("telefone")
-        rg = request.POST.get("rg")
-        senha = request.POST.get("senha")
+        if not all([nome, email, rg, senha]):
+            return render(request, "cadastro_professor.html", {
+                "erro": "Preencha todos os campos obrigatórios."
+            })
 
+        if User.objects.filter(username=rg).exists() or Professor.objects.filter(rg=rg).exists():
+            return render(request, "cadastro_professor.html", {
+                "erro": "Esse RG já está cadastrado."
+            })
 
-        # RG será o login do professor
-        user = User.objects.create_user(
-            username=rg,
-            email=email,
-            password=senha
-        )
+        if User.objects.filter(email=email).exists() or Professor.objects.filter(email=email).exists():
+            return render(request, "cadastro_professor.html", {
+                "erro": "Esse e-mail já está cadastrado."
+            })
 
+        with transaction.atomic():
+            user = User.objects.create_user(
+                username=rg,
+                email=email,
+                password=senha,
+            )
+            Professor.objects.create(
+                user=user,
+                nome=nome,
+                email=email,
+                telefone=telefone,
+                rg=rg,
+            )
 
-        Professor.objects.create(
-            user=user,
-            nome=nome,
-            email=email,
-            telefone=telefone,
-            rg=rg
-        )
-
-
-        return redirect("/login/")
-
+        return redirect("login_professor")
 
     return render(request, "cadastro_professor.html")
 
 
-
-# =========================
-# 7. LOGIN ALUNO
-# =========================
-
-# LOGIN ALUNO
-
 def login_aluno(request):
-
     if request.method == "POST":
+        ra = request.POST.get("ra", "").strip()
+        digito_ra = request.POST.get("digito_ra", "").strip()
+        uf = request.POST.get("uf", "SP").strip().upper()
+        senha = request.POST.get("senha", "")
 
-        ra = request.POST.get("ra")
-        senha = request.POST.get("senha")
+        username = _identificador_aluno(ra, digito_ra, uf)
+        usuario = authenticate(request, username=username, password=senha)
 
-        usuario = authenticate(
-            request,
-            username=ra,
-            password=senha
-        )
+        # Compatibilidade com cadastros antigos, que usavam apenas o RA.
+        if usuario is None:
+            usuario = authenticate(request, username=ra, password=senha)
 
-        if usuario:
+        if usuario and Aluno.objects.filter(user=usuario).exists():
             login(request, usuario)
-            return redirect("/painel/")
-
+            return redirect("painel_aluno")
 
         return render(request, "login_aluno.html", {
-            "erro": "RA ou senha inválidos"
+            "erro": "RA, dígito, UF ou senha inválidos."
         })
-
 
     return render(request, "login_aluno.html")
-# =========================
-# 8. LOGIN PROFESSOR
-# =========================
+
 
 def login_professor(request):
-
     if request.method == "POST":
+        rg = request.POST.get("rg", "").strip()
+        senha = request.POST.get("senha", "")
+        usuario = authenticate(request, username=rg, password=senha)
 
-        rg = request.POST.get("rg")
-        senha = request.POST.get("senha")
-
-
-        usuario = authenticate(
-            request,
-            username=rg,
-            password=senha
-        )
-
-
-        if usuario:
-
-            # confirma se é professor
-            try:
-                Professor.objects.get(user=usuario)
-
-                login(request, usuario)
-
-                return redirect("/painel/")
-
-            except Professor.DoesNotExist:
-                pass
-
+        if usuario and Professor.objects.filter(user=usuario).exists():
+            login(request, usuario)
+            return redirect("painel_professor")
 
         return render(request, "login_professor.html", {
-            "erro": "RG ou senha inválidos"
+            "erro": "RG ou senha inválidos."
         })
-
 
     return render(request, "login_professor.html")
 
 
-
-# =========================
-# 9. PAINEL
-# =========================
-
 def painel(request):
+    if not request.user.is_authenticated:
+        return redirect("login")
 
-    if request.user.is_authenticated:
+    if Aluno.objects.filter(user=request.user).exists():
+        return redirect("painel_aluno")
+    if Professor.objects.filter(user=request.user).exists():
+        return redirect("painel_professor")
 
-        return render(request, "painel.html")
+    return redirect("login")
 
 
-    return redirect("/login/")
+def painel_aluno(request):
+    if not request.user.is_authenticated or not Aluno.objects.filter(user=request.user).exists():
+        return redirect("login_aluno")
+    aluno = Aluno.objects.get(user=request.user)
+    return render(request, "painel_aluno.html", {"aluno": aluno})
 
 
+def painel_professor(request):
+    if not request.user.is_authenticated or not Professor.objects.filter(user=request.user).exists():
+        return redirect("login_professor")
+    professor = Professor.objects.get(user=request.user)
+    return render(request, "painel_professor.html", {"professor": professor})
 
-# =========================
-# 10. LOGOUT
-# =========================
 
 def logout_usuario(request):
-
     logout(request)
-
-    return redirect("/")
+    return redirect("home")

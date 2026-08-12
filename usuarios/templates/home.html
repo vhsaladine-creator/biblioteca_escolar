@@ -1,13 +1,26 @@
-<h1>Biblioteca Escolar</h1>
-
-<h2>Bem-vindo</h2>
-
-<a href="/cadastro/">
-    Quero me cadastrar
-</a>
-
-<br><br>
-
-<a href="/ja_tenho_cadastro/">
-    Já tenho cadastro
-</a>
+{% extends "base.html" %}
+{% block title %}MiConte+{% endblock %}
+{% block content %}
+<div class="page">
+    <section class="info">
+        <h1>Conheça o <strong>MiConte+</strong></h1>
+        <p>Uma biblioteca escolar digital para aproximar estudantes, professores e o acervo da escola em um só lugar.</p>
+        <ul>
+            <li>Consulte livros disponíveis.</li>
+            <li>Acompanhe empréstimos e reservas.</li>
+            <li>Tenha seu histórico organizado.</li>
+            <li>Acesse com uma conta própria do MiConte+.</li>
+        </ul>
+    </section>
+    <section class="auth">
+        <div class="brand">MiConte<span>+</span></div>
+        <div class="card-area">
+            <h2>Olá, novamente!</h2>
+            <p class="muted">Escolha seu perfil para acessar a plataforma.</p>
+            <a class="choice" href="{% url 'login_aluno' %}"><div>Sou <strong>Estudante</strong></div><div class="arrow">→</div></a>
+            <a class="choice" href="{% url 'login_professor' %}"><div>Sou <strong>Professor</strong></div><div class="arrow">→</div></a>
+            <a class="small-link" href="{% url 'escolha_cadastro' %}">Ainda não possui cadastro? <strong>Cadastre-se</strong></a>
+        </div>
+    </section>
+</div>
+{% endblock %}

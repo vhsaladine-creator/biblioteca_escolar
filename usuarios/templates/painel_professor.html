@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Painel do professor | MiConte+{% endblock %}
+{% block content %}
+<div class="auth" style="min-height:100vh;max-width:1100px;margin:auto;">
+    <div class="brand">MiConte<span>+</span></div>
+    <div class="card-area" style="max-width:900px;">
+        <h2>Olá, {{ professor.nome }}!</h2>
+        <p class="muted">Seu painel de professor está separado do painel dos estudantes.</p>
+        <div class="choice"><div><strong>Consultar acervo</strong><span>Veja os livros cadastrados na biblioteca.</span></div><div class="arrow">→</div></div>
+        <div class="choice"><div><strong>Empréstimos</strong><span>Acompanhe operações da biblioteca.</span></div><div class="arrow">→</div></div>
+        <div class="choice"><div><strong>Reservas</strong><span>Consulte solicitações de reserva.</span></div><div class="arrow">→</div></div>
+        <a class="small-link" href="{% url 'logout' %}">Sair da conta</a>
+    </div>
+</div>
+{% endblock %}

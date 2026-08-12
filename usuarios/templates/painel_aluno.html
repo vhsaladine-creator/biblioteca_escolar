@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Painel do estudante | MiConte+{% endblock %}
+{% block content %}
+<div class="auth" style="min-height:100vh;max-width:1100px;margin:auto;">
+    <div class="brand">MiConte<span>+</span></div>
+    <div class="card-area" style="max-width:900px;">
+        <h2>Olá, {{ aluno.nome }}!</h2>
+        <p class="muted">Seu painel de estudante está pronto para receber os próximos módulos da biblioteca.</p>
+        <div class="choice"><div><strong>Livros disponíveis</strong><span>Consulte o acervo da escola.</span></div><div class="arrow">→</div></div>
+        <div class="choice"><div><strong>Meus empréstimos</strong><span>Acompanhe livros retirados e prazos.</span></div><div class="arrow">→</div></div>
+        <div class="choice"><div><strong>Minhas reservas</strong><span>Veja livros reservados.</span></div><div class="arrow">→</div></div>
+        <a class="small-link" href="{% url 'logout' %}">Sair da conta</a>
+    </div>
+</div>
+{% endblock %}
