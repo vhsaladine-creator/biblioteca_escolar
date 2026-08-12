@@ -1,29 +1,27 @@
-<form method="post">
-
-    {% csrf_token %}
-
-    <label>Nome:</label>
-    <input type="text" name="nome">
-
-
-    <label>Email:</label>
-    <input type="email" name="email">
-
-
-    <label>Telefone:</label>
-    <input type="text" name="telefone">
-
-
-    <label>RG:</label>
-    <input type="text" name="rg">
-
-
-    <label>Senha:</label>
-    <input type="password" name="senha">
-
-
-    <button type="submit">
-        Cadastrar Professor
-    </button>
-
-</form>
+{% extends "base.html" %}
+{% block title %}Cadastro do professor | MiConte+{% endblock %}
+{% block content %}
+<div class="page">
+    <section class="info">
+        <h1>Crie sua conta <strong>MiConte+</strong></h1>
+        <p>Faça seu cadastro como professor para acessar as ferramentas da biblioteca escolar.</p>
+    </section>
+    <section class="auth">
+        <div class="brand">MiConte<span>+</span></div>
+        <div class="card-area">
+            <h2>Cadastro de professor</h2>
+            <p class="muted">Depois do cadastro, o acesso será feito com RG e senha.</p>
+            {% if erro %}<div class="error">{{ erro }}</div>{% endif %}
+            <form method="post">
+                {% csrf_token %}
+                <label for="nome">Nome completo</label><input id="nome" name="nome" required>
+                <label for="email">E-mail</label><input id="email" name="email" type="email" required>
+                <label for="telefone">Telefone</label><input id="telefone" name="telefone">
+                <label for="rg">RG</label><input id="rg" name="rg" required>
+                <label for="senha">Senha</label><input id="senha" name="senha" type="password" required>
+                <div class="buttons"><a class="btn btn-secondary" href="{% url 'home' %}">Voltar</a><button class="btn btn-primary" type="submit">Criar conta</button></div>
+            </form>
+        </div>
+    </section>
+</div>
+{% endblock %}
