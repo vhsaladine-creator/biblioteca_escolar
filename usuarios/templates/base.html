@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}MiConte+{% endblock %}</title>
+    <style>
+        * { box-sizing: border-box; }
+        body { margin: 0; font-family: Arial, Helvetica, sans-serif; background: #f4f7fb; color: #243047; }
+        a { color: inherit; text-decoration: none; }
+        .page { min-height: 100vh; display: grid; grid-template-columns: 1.25fr .75fr; }
+        .info { margin: 32px; border-radius: 24px; padding: 56px; background: linear-gradient(145deg, #123a63, #1f77a8); color: white; display: flex; flex-direction: column; justify-content: center; }
+        .info h1 { font-size: 52px; margin: 0 0 18px; }
+        .info h1 strong { display: block; }
+        .info p { font-size: 19px; line-height: 1.55; max-width: 760px; }
+        .info ul { font-size: 17px; line-height: 1.7; padding-left: 22px; }
+        .auth { padding: 42px; display: flex; flex-direction: column; }
+        .brand { font-size: 30px; font-weight: 800; color: #123a63; margin-bottom: 20px; }
+        .brand span { color: #1f77a8; }
+        .card-area { flex: 1; display: flex; flex-direction: column; justify-content: center; max-width: 560px; width: 100%; margin: auto; }
+        .card-area h2 { font-size: 34px; margin: 0 0 8px; }
+        .muted { color: #6a7587; margin-bottom: 28px; }
+        .choice { background: white; border: 1px solid #e4e9f0; border-radius: 16px; padding: 18px 20px; margin: 10px 0; display: flex; align-items: center; justify-content: space-between; box-shadow: 0 8px 24px rgba(20,42,70,.08); }
+        .choice strong { font-size: 22px; display: block; }
+        .arrow { width: 38px; height: 38px; border-radius: 50%; background: #eef4fa; display: grid; place-items: center; }
+        label { display: block; margin: 14px 0 7px; font-weight: 600; }
+        input, select { width: 100%; padding: 14px; border: 1px solid #ccd5e0; border-radius: 10px; font-size: 15px; background: white; }
+        .row { display: grid; grid-template-columns: 1fr 110px 90px; gap: 10px; }
+        .buttons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 24px; }
+        .btn { border: 0; border-radius: 12px; padding: 14px; font-weight: 700; text-align: center; cursor: pointer; }
+        .btn-primary { background: #1f77a8; color: white; }
+        .btn-secondary { background: white; color: #1f77a8; border: 1px solid #1f77a8; }
+        .error { background: #ffe9e9; color: #8f1f1f; border-radius: 10px; padding: 12px; margin-bottom: 12px; }
+        .small-link { text-align: center; color: #1f77a8; margin-top: 18px; }
+        @media (max-width: 900px) { .page { grid-template-columns: 1fr; } .info { margin: 16px; padding: 32px; } .info h1 { font-size: 38px; } .auth { padding: 28px 20px; } }
+    </style>
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
